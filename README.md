@@ -3,7 +3,6 @@
 
 This script estimates the pixel spatial resolution (in cm) and the resulting image footprint on land with width (in meters) and height (in meters) 
 for a  drone camera capturing a vertical image.  
-Input parameters can be manually set in main() or the script can be executed from the command line.
 
 ## Parameters
 0.  the drone model.  Valid inputs include 'P3P', 'P4P'(includes P4P Advanced, P4Pv2, P4PRTK, or Mavic Pro),'Sequoia Monochrome', 'REDEDGE-M, or 'Sequoia RGB, 
