@@ -12,8 +12,8 @@ Input parameters can be manually set in main() or the script can be executed fro
 3. The output image height in pixels
 4. camera focal length
 
-##Example of a command line option:   $ python gsd.py 'P4P' 3 5472 3648 8.8
-
-Or better still, execute from your IDE and manually set the parameters in main() yourself.
+##Example of a command line option and output:   $ python gsd.py 'REDEDGE-M' 120 1280 960 5.5
 
 ![image](https://user-images.githubusercontent.com/71470542/164109178-909cefdb-5575-4153-93c8-c84a8c2cba24.png)
+
+Or better still, execute from your IDE and manually set the parameters in main() yourself.
