@@ -9,38 +9,39 @@ __copyright__ = '(C) 2022, Gerry Gabrisch'
 import sys
 import traceback
 try:
-
-    def get_sensor_size(camera_type):
-        '''Different cameras have different sensors so return the correct sensor size.(W, H, focal length)'''
-        if camera_type == 'P3P':
-            sensor_size = (6.16, 4.62, 3.75)
+    #For P4P, P4P Advanced, P4Pv2, or P4P RTK use P4P
+    
+    def get_sensor_size(camera):
+        #{'camera_id:(sensorbx in mm,  sensor y in mm, focal length in mm, image x in pixels, image y in pixels)
+        cameras = {'P3P':(6.16, 4.62, 3.6, 4000, 3000),\
+                   'P4P':(13.2, 8, 8.8, 5472, 3648),\
+                   'Sequoia Monochrome':(4.8, 3.6, 3.89, 1280, 960 ),\
+                   'Sequoia RGB':(6.175, 4.531, 4.88, 4608, 3456),\
+                   'RedEdge-M':(4.8, 3.6, 5.5, 1280, 960),\
+                   'ZenmuseP1-24':(35.9, 24, 24, 8192, 5460),\
+                   'ZenmuseP1-35':(35.9, 24, 35, 8192, 5460),\
+                   'ZenmuseP1-50':(35.9, 24, 50, 8192, 5460), \
+                   'MotoG3':(5.05,3.744,2.5,3264,2448),\
+                   'Hero5Black':(6.17, 3.47, 3, 2016, 1128),\
+                   'SamsungS22Ultra':(96, 72, 6.4, 12000, 9000)}        
         
-        elif camera_type == 'P4P' or camera_type == 'Mavic Pro':
-            #For P4P, P4P Advanced, P4Pv2, or P4P RTK use P4P
-            sensor_size = (13.2, 8, 8.8)
         
-        elif camera_type == 'Sequoia Monochrome':
-            sensor_size = (4.8, 3.6, 4.0 )
-        
-        elif camera_type == 'Sequoia RGB':
-            sensor_size = (6.175, 4.531, 4.0)
-        
-        elif camera_type == 'RedEdge-M':
-            sensor_size = (4.8, 3.6, 5.5)
-        
-        elif type(camera_type) == tuple:
-            sensor_size = camera_type
+        if camera in cameras:
+            camera = cameras[camera]
+            return camera
         
         else:
             sys.exit('Unknown camera type - and unknown sensor size. Check camera_type input parameter for correct spelling')
         
-        return sensor_size
+       
     
-    def get_ground_sampling_distance(sensor_size, AOG, image_width, image_height):
+    def get_ground_sampling_distance(camera_stats, AOG):
         
-        sensor_width = float(sensor_size[0])#mm
-        sensor_height = float(sensor_size[1])
-        focal_length = float(sensor_size[2])
+        sensor_width = camera_stats[0]
+        sensor_height = camera_stats[1]
+        focal_length = camera_stats[2]
+        image_width = camera_stats[3]
+        image_height = camera_stats[4]
         gsdw = ((sensor_width*AOG)/(focal_length*image_width))
         gsdh = ((sensor_height*AOG)/(focal_length*image_height))
         
@@ -54,17 +55,27 @@ try:
     
     
     def main():
-           
-        camera_type = str(sys.argv[1])
-        AOG = float(sys.argv[2])
-        image_width = float(sys.argv[3])
-        image_height = float(sys.argv[4])
-        sensor_size = get_sensor_size(camera_type)
         
-        gsd = get_ground_sampling_distance(sensor_size, AOG, image_width, image_height)
-        print('pixel resolution in cm = ', gsd[0])
+        #####              USER-DEFINED INPUT PARAMETERS              #################
+        
+        camera = 'P3P'
+        
+        #camera altitude in meters above ground
+        AOG = 300  
+        
+        
+        
+        
+        #Get the sensor sizes, focal lenght, and image sizes for the input camera.
+        camera_stats = get_sensor_size(camera)
+        #Calculate GSD
+        gsd = get_ground_sampling_distance(camera_stats, AOG)
+        print('pixel resolution in cm = ', round(gsd[0],2))
         print ('ground footprint width in meters = ', round(gsd[1],1))
         print ('ground footprint height in meters = ', round(gsd[2],1))
+        
+        
+        
 
 except:
     tb = sys.exc_info()[2]
